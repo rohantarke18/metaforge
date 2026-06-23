@@ -7,10 +7,21 @@ interface Field {
 }
 
 interface FormRendererProps {
-  fields: Field[];
+  fields?: Field[];
 }
 
-export default function FormRenderer({ fields }: FormRendererProps) {
+export default function FormRenderer({
+  fields,
+}: FormRendererProps) {
+  // Handle missing fields gracefully
+  if (!fields) {
+    return (
+      <p className="text-red-500 font-medium">
+        No fields found.
+      </p>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {fields.map((field, index) => {

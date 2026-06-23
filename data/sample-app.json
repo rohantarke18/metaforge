@@ -3,27 +3,76 @@
     "name": "Employee Manager",
     "description": "Manage employee records"
   },
+
   "pages": [
     {
-      "type": "form",
+      "title": "Dashboard",
+      "components": [
+        {
+          "type": "card",
+          "title": "Employees",
+          "value": "142"
+        },
+        {
+          "type": "card",
+          "title": "Departments",
+          "value": "8"
+        }
+      ]
+    },
+
+    {
+      "title": "Employees",
+
+      "components": [
+        {
+          "type": "table",
+
+          "columns": [
+            "Name",
+            "Email",
+            "Salary"
+          ],
+
+          "rows": [
+            [
+              "John",
+              "john@gmail.com",
+              "50000"
+            ],
+
+            [
+              "Alice",
+              "alice@gmail.com",
+              "65000"
+            ]
+          ]
+        }
+      ]
+    },
+
+    {
       "title": "Employee Form",
-      "fields": [
+
+      "components": [
         {
           "type": "text",
-          "label": "Full Name",
-          "name": "name",
-          "required": true
+          "label": "Full Name"
         },
+
         {
           "type": "email",
-          "label": "Email",
-          "name": "email",
-          "required": true
+          "label": "Email"
         },
+
         {
           "type": "number",
-          "label": "Salary",
-          "name": "salary"
+          "label": "Salary"
+        },
+
+        {
+          "type": "button",
+          "label": "Save Employee"
         }
       ]
     }

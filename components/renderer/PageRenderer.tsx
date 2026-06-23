@@ -1,4 +1,4 @@
-import FormRenderer from "./FormRenderer";
+import ComponentRenderer from "@/components/componentRenderer/ComponentRenderer";
 
 interface PageRendererProps {
   page: any;
@@ -7,21 +7,22 @@ interface PageRendererProps {
 export default function PageRenderer({
   page,
 }: PageRendererProps) {
+  return (
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold">
+        {page.title}
+      </h2>
 
-  switch (page.type) {
-
-    case "form":
-      return (
-        <FormRenderer
-          fields={page.fields}
-        />
-      );
-
-    default:
-      return (
-        <p className="text-red-500">
-          Unsupported page type: {page.type}
-        </p>
-      );
-  }
+      <div className="space-y-4">
+        {page.components?.map(
+          (component: any, index: number) => (
+            <ComponentRenderer
+              key={index}
+              component={component}
+            />
+          )
+        )}
+      </div>
+    </div>
+  );
 }

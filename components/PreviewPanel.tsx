@@ -17,22 +17,23 @@ export default function PreviewPanel({
       </CardHeader>
 
       <CardContent>
-        <div className="min-h-[500px] rounded-lg border-2 border-dashed p-6 overflow-auto">
-
+        <div className="min-h-[500px] space-y-8 rounded-lg border-2 border-dashed p-6 overflow-auto">
           {error ? (
-            <p className="text-red-500 font-medium">
-              {error}
-            </p>
+            <p className="text-red-500 font-medium">{error}</p>
           ) : !parsedConfig?.pages ? (
             <p className="text-red-500 font-medium">
               Missing "pages" property.
             </p>
           ) : (
-            <PageRenderer
-              page={parsedConfig.pages[0]}
-            />
+            parsedConfig.pages.map((page: any, index: number) => (
+              <div
+                key={index}
+                className="rounded-lg border bg-white p-6 shadow-sm"
+              >
+                <PageRenderer page={page} />
+              </div>
+            ))
           )}
-
         </div>
       </CardContent>
     </Card>
