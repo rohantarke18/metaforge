@@ -1,0 +1,31 @@
+{
+  "app": {
+    "name": "Employee Manager",
+    "description": "Manage employee records"
+  },
+  "pages": [
+    {
+      "type": "form",
+      "title": "Employee Form",
+      "fields": [
+        {
+          "type": "text",
+          "label": "Full Name",
+          "name": "name",
+          "required": true
+        },
+        {
+          "type": "email",
+          "label": "Email",
+          "name": "email",
+          "required": true
+        },
+        {
+          "type": "number",
+          "label": "Salary",
+          "name": "salary"
+        }
+      ]
+    }
+  ]
+}
