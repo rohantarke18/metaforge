@@ -41,9 +41,9 @@ export default function Home() {
         throw new Error("Failed to save");
       }
 
-      await response.json();
-
       alert("✅ Application saved successfully!");
+
+      window.location.href = "/apps";
     } catch (error) {
       console.error(error);
       alert("❌ Failed to save application.");
@@ -68,9 +68,15 @@ export default function Home() {
         </div>
 
         <div className="mt-6 flex justify-center">
-          <Button size="lg" onClick={handleGenerate}>
-            Generate Application
-          </Button>
+      <Button
+  size="lg"
+  onClick={() => {
+    alert("Shadcn Button Works");
+    console.log("Shadcn Button Works");
+  }}
+>
+  Generate Application
+</Button>
         </div>
       </div>
     </main>
