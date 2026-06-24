@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MetaForge",
-  description: "Metadata Driven Application Runtime",
+  title: "MetaForge — JSON-Driven App Builder",
+  description: "Build and preview applications from JSON configuration in real time.",
 };
 
 export default function RootLayout({
@@ -29,13 +29,19 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full bg-[#fafafa]">
         {children}
 
         <Toaster
           position="top-right"
           richColors
           closeButton
+          toastOptions={{
+            style: {
+              fontFamily: "var(--font-geist-sans)",
+              fontSize: "13px",
+            },
+          }}
         />
       </body>
     </html>
