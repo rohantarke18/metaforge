@@ -1,36 +1,180 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 MetaForge
 
-## Getting Started
+> **A Metadata-Driven Application Generator that transforms JSON configuration into fully functional web applications.**
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 📌 Overview
+
+MetaForge is a full-stack low-code platform inspired by Base44.
+
+Instead of manually writing frontend code, users define an application's structure using JSON metadata. The runtime engine dynamically renders pages, forms, dashboards, tables, and layouts while supporting CRUD operations through a PostgreSQL database.
+
+---
+
+## ✨ Features
+
+### Dynamic Runtime
+
+* JSON-driven application rendering
+* Live Preview
+* Runtime validation
+* Graceful error handling
+* Extensible component registry
+
+### Frontend
+
+* Dynamic Forms
+* Dynamic Tables
+* Dashboard Cards
+* Responsive UI
+* Loading States
+* Error States
+
+### Backend
+
+* Dynamic CRUD APIs
+* Prisma ORM
+* Neon PostgreSQL
+* Runtime Validation
+* Configuration Storage
+
+### Additional Features
+
+* 📂 CSV Import
+* 📥 JSON Export
+* 🔔 Toast Notifications
+
+---
+
+## 🏗 Architecture
+
+```
+                JSON Configuration
+                       │
+                       ▼
+                Runtime Engine
+          (Parser + Validator)
+                       │
+                       ▼
+             Component Registry
+                       │
+      ┌─────────┬─────────┬─────────┐
+      ▼         ▼         ▼
+    Cards     Tables     Forms
+                       │
+                       ▼
+                CRUD API Layer
+                       │
+                       ▼
+                 Prisma ORM
+                       │
+                       ▼
+              Neon PostgreSQL
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚙️ Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Frontend
 
-## Learn More
+* Next.js 16
+* React
+* TypeScript
+* Tailwind CSS
+* Shadcn UI
+* Lucide Icons
 
-To learn more about Next.js, take a look at the following resources:
+### Backend
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* Next.js API Routes
+* Prisma ORM
+* Neon PostgreSQL
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Runtime
 
-## Deploy on Vercel
+* JSON Parser
+* Runtime Validator
+* Dynamic Component Registry
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Utilities
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* PapaParse
+* Sonner Toasts
+
+---
+
+## 📂 Project Structure
+
+```
+app/
+components/
+data/
+lib/
+prisma/
+public/
+types/
+```
+
+---
+
+## 🚀 Getting Started
+
+```bash
+git clone <repository-url>
+
+npm install
+
+npx prisma generate
+
+npm run dev
+```
+
+Open:
+
+```
+http://localhost:3000
+```
+
+---
+
+## 🎯 How It Works
+
+1. Create or import a JSON configuration.
+2. The runtime validates the configuration.
+3. Components are rendered dynamically.
+4. Users preview the generated application instantly.
+5. Save applications using CRUD APIs.
+6. Store metadata in Neon PostgreSQL.
+7. Export configurations as JSON.
+
+---
+
+## 📸 Screenshots
+
+Add screenshots here:
+
+* Home Page
+* Live Preview
+* My Applications
+* CSV Import
+* JSON Export
+
+---
+
+## 🔮 Future Improvements
+
+* Google Authentication
+* Multi-language Support
+* Workflow Automation
+* Dynamic Database Schema Generation
+* GitHub Export
+* PWA Support
+
+---
+
+## 👨‍💻 Author
+
+**Rohan Tarke**
+
