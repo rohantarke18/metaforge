@@ -4,7 +4,7 @@
 
 ---
 
-<p align="center"> <img src="https://raw.githubusercontent.com/rohantarke18/metaforge/main/public/metaforge-banner.png" alt="MetaForge Banner" width="100%"> </p>
+<p align="center"> <img src="https://raw.githubusercontent.com/rohantarke18/metaforge/main/public/metaforge-banner.jpg" alt="MetaForge Banner" width="100%"> </p>
 
 <h1 align="center">🚀 MetaForge</h1>
 
