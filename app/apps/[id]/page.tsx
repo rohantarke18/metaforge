@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { toast } from "sonner";
 
 import Header from "@/components/Header";
 import JsonEditor from "@/components/JsonEditor";
@@ -15,16 +16,23 @@ export default function AppDetails() {
   const id = params.id;
 
   const [jsonText, setJsonText] = useState("");
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     async function loadApp() {
-      const res = await fetch("/api/apps");
-      const apps = await res.json();
+      try {
+        const res = await fetch("/api/apps");
+        const apps = await res.json();
 
-      const app = apps.find((a: any) => a.id === id);
+        const app = apps.find((a: any) => a.id === id);
 
-      if (app) {
-        setJsonText(JSON.stringify(app.config, null, 2));
+        if (app) {
+          setJsonText(JSON.stringify(app.config, null, 2));
+        } else {
+          toast.error("Application not found");
+        }
+      } catch {
+        toast.error("Failed to load application");
       }
     }
 
@@ -35,30 +43,42 @@ export default function AppDetails() {
 
   async function saveChanges() {
     try {
+      setSaving(true);
+
       const config = JSON.parse(jsonText);
 
-      await fetch("/api/apps", {
+      const res = await fetch("/api/apps", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           id,
-          name: config.app.name,
-          description: config.app.description,
+          name: config.app?.name || "Untitled App",
+          description: config.app?.description || "",
           config,
         }),
       });
 
-      alert("✅ Changes Saved!");
+      if (!res.ok) {
+        throw new Error();
+      }
+
+      toast.success("Application updated successfully");
     } catch (err) {
       console.error(err);
-      alert("❌ Invalid JSON");
+      toast.error("Invalid JSON or update failed");
+    } finally {
+      setSaving(false);
     }
   }
 
   if (!jsonText) {
-    return <main className="p-10">Loading...</main>;
+    return (
+      <main className="p-10">
+        <h1 className="text-2xl font-bold">Loading...</h1>
+      </main>
+    );
   }
 
   return (
@@ -79,8 +99,12 @@ export default function AppDetails() {
         </div>
 
         <div className="mt-6 flex justify-center">
-          <Button size="lg" onClick={saveChanges}>
-            Save Changes
+          <Button
+            size="lg"
+            onClick={saveChanges}
+            disabled={saving}
+          >
+            {saving ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </div>
