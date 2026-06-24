@@ -32,22 +32,24 @@ export default function JsonEditor({ value, onChange }: JsonEditorProps) {
       <div className="relative flex-1 bg-[#1e1e1e]">
         {/* Line numbers column */}
         <div className="flex h-full">
-          <div className="hidden select-none border-r border-[#2d2d2d] bg-[#1e1e1e] px-3 py-4 text-right sm:block">
-            {value.split("\n").map((_, i) => (
-              <div
-                key={i}
-                className="font-mono text-xs leading-6 text-[#858585]"
-              >
-                {i + 1}
-              </div>
-            ))}
-          </div>
+          {value && (
+            <div className="hidden select-none border-r border-[#2d2d2d] bg-[#1e1e1e] px-3 py-4 text-right sm:block">
+              {value.split("\n").map((_, i) => (
+                <div
+                  key={i}
+                  className="font-mono text-xs leading-6 text-[#858585]"
+                >
+                  {i + 1}
+                </div>
+              ))}
+            </div>
+          )}
           <textarea
             className="min-h-[520px] w-full flex-1 resize-none bg-[#1e1e1e] p-4 font-mono text-sm leading-6 text-[#d4d4d4] outline-none placeholder:text-[#858585] scrollbar-thin"
             value={value}
             onChange={(e) => onChange(e.target.value)}
             spellCheck={false}
-            placeholder='{\n  "app": {\n    "name": "My App"\n  }\n}'
+            placeholder="Paste your JSON configuration here..."
             style={{
               caretColor: "#aeafad",
               tabSize: 2,
@@ -60,7 +62,7 @@ export default function JsonEditor({ value, onChange }: JsonEditorProps) {
       <div className="flex items-center justify-between border-t border-[#2d2d2d] bg-[#007acc] px-4 py-1">
         <span className="text-[11px] text-white/80">JSON Configuration</span>
         <span className="text-[11px] text-white/80">
-          {value.split("\n").length} lines
+          {value ? `${value.split("\n").length} lines` : "Empty"}
         </span>
       </div>
     </div>

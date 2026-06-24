@@ -1,12 +1,13 @@
-import { Monitor, RefreshCw, AlertTriangle, Eye } from "lucide-react";
+import { Monitor, RefreshCw, AlertTriangle, Eye, FileJson } from "lucide-react";
 import PageRenderer from "@/components/renderer/PageRenderer";
 
 interface PreviewPanelProps {
   parsedConfig: any;
   error: string;
+  isEmpty?: boolean;
 }
 
-export default function PreviewPanel({ parsedConfig, error }: PreviewPanelProps) {
+export default function PreviewPanel({ parsedConfig, error, isEmpty = false }: PreviewPanelProps) {
   const hasContent = !error && parsedConfig?.pages;
 
   return (
@@ -32,7 +33,30 @@ export default function PreviewPanel({ parsedConfig, error }: PreviewPanelProps)
 
       {/* Preview content */}
       <div className="min-h-[520px] flex-1 overflow-auto bg-white p-6">
-        {error ? (
+        {isEmpty ? (
+          /* No application loaded state */
+          <div className="flex h-full min-h-[400px] flex-col items-center justify-center gap-4 text-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-50 to-indigo-50 ring-1 ring-violet-100">
+              <FileJson className="h-7 w-7 text-violet-400" />
+            </div>
+            <div>
+              <p className="text-base font-semibold text-gray-700">
+                No Application Loaded
+              </p>
+              <p className="mt-1.5 max-w-[220px] text-xs text-gray-400 leading-relaxed">
+                Paste your JSON configuration here or click{" "}
+                <span className="font-medium text-violet-500">Load Sample</span>{" "}
+                to get started.
+              </p>
+            </div>
+            <div className="mt-1 flex items-center gap-2 rounded-lg border border-dashed border-violet-200 bg-violet-50/50 px-4 py-2.5">
+              <Eye className="h-3.5 w-3.5 text-violet-400" />
+              <span className="text-xs text-violet-500 font-medium">
+                Live preview will appear here
+              </span>
+            </div>
+          </div>
+        ) : error ? (
           /* Error state */
           <div className="flex h-full min-h-[400px] flex-col items-center justify-center gap-4 rounded-lg border border-red-100 bg-red-50 p-8 text-center">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
@@ -46,7 +70,7 @@ export default function PreviewPanel({ parsedConfig, error }: PreviewPanelProps)
             </div>
           </div>
         ) : !parsedConfig?.pages ? (
-          /* Empty state */
+          /* Waiting / partial JSON state */
           <div className="flex h-full min-h-[400px] flex-col items-center justify-center gap-4 text-center">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-50 to-indigo-50 ring-1 ring-violet-100">
               <Eye className="h-6 w-6 text-violet-400" />
@@ -89,7 +113,7 @@ export default function PreviewPanel({ parsedConfig, error }: PreviewPanelProps)
             }`}
           />
           <span className="text-[11px] text-gray-500">
-            {error ? "Error" : hasContent ? "Rendering" : "Waiting"}
+            {isEmpty ? "No Application" : error ? "Error" : hasContent ? "Rendering" : "Waiting"}
           </span>
         </div>
         <span className="text-[11px] text-gray-400">Live Preview</span>

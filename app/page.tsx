@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   Rocket,
   Loader2,
   AlertCircle,
   Download,
+  FileText,
+  FolderOpen,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -20,16 +22,60 @@ import { runRuntime } from "@/lib/runtime/runtime";
 
 export default function Home() {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [jsonText, setJsonText] = useState(
-    JSON.stringify(appConfig, null, 2)
-  );
-
+  const [jsonText, setJsonText] = useState("");
   const [loading, setLoading] = useState(false);
 
   const runtime = runRuntime(jsonText);
 
+  function handleLoadSample() {
+    const sampleText = JSON.stringify(appConfig, null, 2);
+    setJsonText(sampleText);
+    toast.success("Sample application loaded!");
+  }
+
+  function handleImportClick() {
+    fileInputRef.current?.click();
+  }
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.name.endsWith(".json")) {
+      toast.error("Please select a .json file.");
+      e.target.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      try {
+        // Validate it's parseable JSON before loading
+        JSON.parse(text);
+        setJsonText(text);
+        toast.success(`Imported "${file.name}" successfully!`);
+      } catch {
+        toast.error("Invalid JSON file. Please check the file and try again.");
+      }
+    };
+    reader.onerror = () => {
+      toast.error("Failed to read file.");
+    };
+    reader.readAsText(file);
+
+    // Reset input so the same file can be re-imported if needed
+    e.target.value = "";
+  }
+
   async function handleGenerate() {
+    if (!jsonText.trim()) {
+      toast.error("Please paste a JSON configuration or load a sample first.");
+      return;
+    }
+
     if (runtime.error) {
       toast.error(runtime.error);
       return;
@@ -69,6 +115,11 @@ export default function Home() {
 
   function handleExportJSON() {
     try {
+      if (!jsonText.trim()) {
+        toast.error("Nothing to export. Please load or paste a configuration first.");
+        return;
+      }
+
       const blob = new Blob([jsonText], {
         type: "application/json",
       });
@@ -98,9 +149,20 @@ export default function Home() {
     }
   }
 
+  const isGenerateDisabled = loading || !!runtime.error || !jsonText.trim();
+
   return (
     <div className="flex min-h-screen flex-col bg-[#fafafa]">
       <Header />
+
+      {/* Hidden file input for Import JSON */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".json,application/json"
+        className="hidden"
+        onChange={handleFileChange}
+      />
 
       {/* Hero */}
       <div className="border-b border-gray-100 bg-white">
@@ -124,7 +186,7 @@ export default function Home() {
 
             <div className="hidden items-center gap-3 sm:flex">
 
-              {runtime.error && (
+              {jsonText.trim() && runtime.error && (
                 <div className="flex items-center gap-1.5 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600 ring-1 ring-red-100">
                   <AlertCircle className="h-4 w-4" />
                   <span className="text-xs font-medium">
@@ -143,7 +205,7 @@ export default function Home() {
 
               <button
                 onClick={handleGenerate}
-                disabled={loading || !!runtime.error}
+                disabled={isGenerateDisabled}
                 className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-b from-violet-600 to-violet-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:from-violet-500 hover:to-violet-600 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loading ? (
@@ -168,6 +230,24 @@ export default function Home() {
       <main className="flex-1 px-6 py-6">
         <div className="mx-auto max-w-7xl">
 
+          {/* Load Sample / Import JSON buttons above editor */}
+          <div className="mb-3 flex items-center gap-2">
+            <button
+              onClick={handleLoadSample}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 hover:border-gray-300"
+            >
+              <FileText className="h-3.5 w-3.5 text-gray-500" />
+              📄 Load Sample
+            </button>
+            <button
+              onClick={handleImportClick}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 hover:border-gray-300"
+            >
+              <FolderOpen className="h-3.5 w-3.5 text-gray-500" />
+              📂 Import JSON
+            </button>
+          </div>
+
           <div className="grid gap-5 lg:grid-cols-2">
             <JsonEditor
               value={jsonText}
@@ -176,17 +256,32 @@ export default function Home() {
 
             <PreviewPanel
               parsedConfig={runtime.data}
-              error={runtime.error ?? ""}
+              error={jsonText.trim() ? (runtime.error ?? "") : ""}
+              isEmpty={!jsonText.trim()}
             />
           </div>
 
           {/* Mobile Buttons */}
-
           <div className="mt-5 flex flex-col items-center gap-3 sm:hidden">
+
+            <div className="flex w-full max-w-sm gap-2">
+              <button
+                onClick={handleLoadSample}
+                className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50"
+              >
+                📄 Load Sample
+              </button>
+              <button
+                onClick={handleImportClick}
+                className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50"
+              >
+                📂 Import JSON
+              </button>
+            </div>
 
             <button
               onClick={handleGenerate}
-              disabled={loading || !!runtime.error}
+              disabled={isGenerateDisabled}
               className="inline-flex w-full max-w-sm items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-violet-600 to-violet-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:from-violet-500 hover:to-violet-600 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? (
