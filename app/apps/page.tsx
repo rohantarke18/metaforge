@@ -1,82 +1,91 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import appConfig from "@/data/sample-app.json";
+interface AppData {
+  id: string;
+  name: string;
+  description?: string;
+  createdAt: string;
+}
 
-import Header from "@/components/Header";
-import JsonEditor from "@/components/JsonEditor";
-import PreviewPanel from "@/components/PreviewPanel";
+export default function AppsPage() {
+  const [apps, setApps] = useState<AppData[]>([]);
+  const [loading, setLoading] = useState(true);
 
-import { Button } from "@/components/ui/button";
-import { runRuntime } from "@/lib/runtime/runtime";
-
-export default function Home() {
-  const [jsonText, setJsonText] = useState(
-    JSON.stringify(appConfig, null, 2)
-  );
-
-  const runtime = runRuntime(jsonText);
-
-  async function handleGenerate() {
-    if (runtime.error) {
-      alert("Please fix the JSON before saving.");
-      return;
+  useEffect(() => {
+    async function loadApps() {
+      const res = await fetch("/api/apps");
+      const data = await res.json();
+      setApps(data);
+      setLoading(false);
     }
 
-    try {
-      const response = await fetch("/api/apps", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: runtime.data.app.name,
-          description: runtime.data.app.description,
-          config: runtime.data,
-        }),
-      });
+    loadApps();
+  }, []);
 
-      if (!response.ok) {
-        throw new Error("Failed to save");
-      }
+  async function handleDelete(id: string) {
+    if (!confirm("Delete this application?")) return;
 
-      alert("✅ Application saved successfully!");
+    await fetch(`/api/apps?id=${id}`, {
+      method: "DELETE",
+    });
 
-      window.location.href = "/apps";
-    } catch (error) {
-      console.error(error);
-      alert("❌ Failed to save application.");
-    }
+    setApps((prev) => prev.filter((app) => app.id !== id));
+  }
+
+  if (loading) {
+    return (
+      <main className="p-10">
+        <h1>Loading...</h1>
+      </main>
+    );
   }
 
   return (
-    <main className="min-h-screen bg-slate-100 p-8">
-      <div className="mx-auto max-w-7xl">
-        <Header />
+    <main className="min-h-screen bg-slate-100 p-10">
+      <div className="mx-auto max-w-6xl">
+        <h1 className="mb-8 text-4xl font-bold">
+          My Applications
+        </h1>
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          <JsonEditor
-            value={jsonText}
-            onChange={setJsonText}
-          />
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {apps.map((app) => (
+            <div
+              key={app.id}
+              className="rounded-xl bg-white p-6 shadow"
+            >
+              <h2 className="text-2xl font-bold">
+                {app.name}
+              </h2>
 
-          <PreviewPanel
-            parsedConfig={runtime.data}
-            error={runtime.error ?? ""}
-          />
-        </div>
+              <p className="mt-2 text-gray-600">
+                {app.description}
+              </p>
 
-        <div className="mt-6 flex justify-center">
-      <Button
-  size="lg"
-  onClick={() => {
-    alert("Shadcn Button Works");
-    console.log("Shadcn Button Works");
-  }}
->
-  Generate Application
-</Button>
+              <p className="mt-4 text-sm text-gray-500">
+                {new Date(app.createdAt).toLocaleString()}
+              </p>
+
+              <div className="mt-5 flex gap-3">
+                <button
+                  onClick={() => {
+                    window.location.href = `/apps/${app.id}`;
+                  }}
+                  className="rounded bg-blue-600 px-4 py-2 text-white"
+                >
+                  Open
+                </button>
+
+                <button
+                  onClick={() => handleDelete(app.id)}
+                  className="rounded bg-red-600 px-4 py-2 text-white"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </main>
