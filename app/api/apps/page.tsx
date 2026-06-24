@@ -16,8 +16,39 @@ export default function Home() {
     JSON.stringify(appConfig, null, 2)
   );
 
-  // Run the MetaForge Runtime
   const runtime = runRuntime(jsonText);
+
+  async function handleGenerate() {
+    if (runtime.error) {
+      alert("Please fix the JSON before saving.");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/apps", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: runtime.data.app.name,
+          description: runtime.data.app.description,
+          config: runtime.data,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save");
+      }
+
+      await response.json();
+
+      alert("✅ Application saved successfully!");
+    } catch (error) {
+      console.error(error);
+      alert("❌ Failed to save application.");
+    }
+  }
 
   return (
     <main className="min-h-screen bg-slate-100 p-8">
@@ -37,7 +68,7 @@ export default function Home() {
         </div>
 
         <div className="mt-6 flex justify-center">
-          <Button size="lg">
+          <Button size="lg" onClick={handleGenerate}>
             Generate Application
           </Button>
         </div>
