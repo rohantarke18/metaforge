@@ -4,6 +4,26 @@
 
 ---
 
+<p align="center"> <img src="https://raw.githubusercontent.com/rohantarke18/metaforge/main/public/metaforge-banner.png" alt="MetaForge Banner" width="100%"> </p>
+
+<h1 align="center">🚀 MetaForge</h1>
+
+<p align="center"> <strong>Metadata-Driven AI Application Generator</strong> </p>
+
+<p align="center"> Transform JSON configurations into fully functional web applications with dynamic UI rendering, CRUD APIs, live preview, and runtime validation. </p>
+
+<p align="center">
+
+
+
+
+
+
+
+
+
+</p>
+
 ## 📌 Overview
 
 MetaForge is a full-stack low-code platform inspired by Base44.
